@@ -3,7 +3,7 @@ import time
 from signals import *
 
 class Brain():
-    # Time that events will stay in short-term memory
+    # Number of seconds that events will stay in short-term memory
     time_threshold = 4
 
     def __init__(self):
