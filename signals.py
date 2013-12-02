@@ -1,11 +1,22 @@
 from __future__ import division
 
-class Signal():
-    incentive = 0
+import time
 
-    def difference(self):
-        """ Returns the difference between this and another signal's values in a range from 0.0-1.0 """
+class Signal():
+    def difference(self, sig):
+        """ Returns the difference between this and another signal's values in a range from 0.0 - 1.0 """
+        if type(sig) == type(self)
         return 0
+
+    def combine(self, sig):
+        """ Alters this signal to represent a "combined" form of this signal and another signal. """
+        raise NotImplementedError
+
+    @property
+    def incentive(self):
+        """ A measure of how desireable the signal is to feel or avoid from -1.0 - 1.0 """
+        return 0
+
 
 class Color(Signal):
     """ An RGB color with values from (0,0,0) - (255,255,255) """
@@ -18,15 +29,80 @@ class Color(Signal):
         #TODO: Three calls to "abs" is bad. Can we remove them in place of a single call?
         return (abs(self.r - sig.r) + abs(self.g - sig.g) + abs(self.b - sig.b)) / 3 / 255
 
+    def combine(self, sig):
+        self.r = (self.r + sig.r) / 2
+        self.g = (self.g + sig.g) / 2
+        self.b = (self.b + sig.b) / 2
 
-class Incentive(Signal):
-    """ An incentive with values from 0.0 - 1.0 """
+
+class Feeling():
     def __init__(self, intensity):
         self.intensity = intensity
-        self.incentive += intensity
+
+    def difference(self, sig):
+        """
+        Returns 1.0 if the signals are not of the same type (incentive/pain).
+        Returns the numerical difference otherwise.
+        """
+        if (self.incentive > 0 and sig.incentive > 0) or (self.incentive <= 0 and sig.incentive <= 0):
+            return 1.0
+        return abs(self.incentive - sig.incentive)
+
+    def combine(self, sig):
+        this.intensity += sig.intensity
+        this.intensity /= 2
+
+
+class Incentive(Signal, Feeling):
+    """ An incentive with values from 0.0 - 1.0 """
+    @property
+    def incentive(self):
+        return 0 + intensity
 
 class Pain(Signal):
     """ A physical pain with values from 0.0 - 1.0 """
-    def __init__(self, intensity):
-        self.intensity = intensity
-        self.incentive -= intensity
+    @property
+    def incentive(self):
+        return 0 - intensity
+
+
+
+
+
+class Short_Term_Memory():
+    time_created = time.time()
+
+    def __init__(self, signal):
+        self.signal = signal
+
+class Long_Term_Memory(signal):
+    """ A memory of signals occuring at times near each other """
+    time_created = time.time()
+
+    def __init__(self, signals, brain):
+        self.signals = signals
+        self.brain = brain
+
+    def difference(self, sig):
+        """ Returns an average difference of all signals of the same types of both lists """
+
+        # TODO: This won't work. It requires more thought. 
+
+        # Gets the difference in length between the two signal lists from 0.0 - 1.0. 
+        # If the len_diff is greater than 5, set the difference to 1.0
+        len_diff = min(abs(len(self.signals) - len(sig.signals)) / 10, 1.0)
+        dif = 0.0
+        total_matches = 0
+        for sig1 in self.signals:
+            for sig2 in self.signals:
+                toChange = 1.0
+                if type(sig1) == type(sig2):
+                    sigdif = sig1.difference(sig2) 
+                    if self.brain.match_signals(sigdif):
+                        dif += sigdif
+
+
+        if total_matches:
+            return dif / total_matches
+        else: 
+            return 1.0

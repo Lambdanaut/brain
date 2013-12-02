@@ -1,16 +1,21 @@
 import time
 
-from signals import *
+from signals import Short_Term_Memory, Long_Term_Memory
 
 class Brain():
     # Number of seconds that events will stay in short-term memory
     time_threshold = 4
 
+    # How different (from 0.0-1.0) a signal can be from another to trigger each other
+    diff_threshold = 0.5
+
+    long_term_memory_size = 1000
+
     def __init__(self):
         self.signals = []
 
         self.short_term_memory = []
-        self.long_term_memory = [] # List of list of old signals
+        self.long_term_memory = [] # List of lists of old signals
 
     def clean_short_term_memory(self):
         """ Removes short term memories that are older than time_threshold """
@@ -22,20 +27,17 @@ class Brain():
         # Forget old memories
         self.clean_short_term_memory()
 
-        # Process all new signals into memories
+        # Process all new signals into short term memories
         while self.signals:
-            sig = self.signals.pop()
-            print sig
+            new_memory = Short_Term_Memory(self.signals.pop())
+            self.short_term_memory.append(new_memory)
 
-class Short_Term_Memory():
-    time_created = time.time()
+        # Process short term memories into long term memories
+        for memoryX in self.short_term_memory:
+            new_longterm_memory = []
+            for memoryY in self.short_term_memory:
+                if id(memoryX) != id(memoryY):
 
-    def __init__(self, signal):
-        self.signal = signal
-
-class Long_Term_Memory():
-    """ A memory of signals occuring at times near each other """
-    time_created = time.time()
-
-    def __init__(self, signals):
-        signals = []
+    def match_signals(self, signal_difference):
+        """ Returns true if the signals are more similar than the diff_threshold """
+        return signal_difference < self.diff_threshold
