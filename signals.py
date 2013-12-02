@@ -8,7 +8,7 @@ class Signal():
         raise NotImplementedError
 
     def combine(self, sig):
-        """ Alters this signal to represent a "combined" form of this signal and another signal. """
+        """ Alters this signal to represent a "combined" form of this signal and another signal's values. """
         raise NotImplementedError
 
     @property
@@ -52,41 +52,42 @@ class Feeling():
         this.intensity /= 2
 
 
-class Incentive(Signal, Feeling):
+class Incentive(Feeling, Signal):
     """ An incentive with values from 0.0 - 1.0 """
     @property
     def incentive(self):
-        return 0 + intensity
+        return 0 + self.intensity
 
-class Pain(Signal, Feeling):
+
+class Pain(Feeling, Signal):
     """ A physical pain with values from 0.0 - 1.0 """
     @property
     def incentive(self):
-        return 0 - intensity
-
-
-
+        return 0 - self.intensity
 
 
 class Short_Term_Memory():
-    time_created = time.time()
 
     def __init__(self, signal):
         self.signal = signal
 
+        self.time_created = time.time()
+
 class Long_Term_Memory(Signal):
     """ A memory of signals occuring at times near each other """
-    time_created = time.time()
-
-    def __init__(self, signals, brain):
+    def __init__(self, brain, signals):
         self.signals = signals
         self.brain = brain
+
+        now = time.time()
+        self.time_created = now
+        # self.last_recalled = now
 
     def difference(self, comparing_sig):
 
         """ Returns an average difference of all signals of the same types of both lists """
 
-        # TODO: This won't work. It requires more thought. 
+        # TODO: Write a good description of what the fuck is going on here.
 
         # Gets the difference in length between the two signal lists from 0.0 - 1.0. 
         # If the len_diff is greater than 5, set the difference to 1.0
@@ -99,7 +100,7 @@ class Long_Term_Memory(Signal):
         for sig1 in self.signals:
             for sig2 in comparing_sig.signals:
                 any_matches = False
-                if type(sig1) == type(sig2):
+                if sig1.__class__.__name__ == sig2.__class__.__name__:
                     sigdif = sig1.difference(sig2) 
                     if self.brain.match_signals(sigdif):
                         any_matches = True

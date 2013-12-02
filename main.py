@@ -24,10 +24,12 @@ def main():
         # Input Loop
         i = raw_input(" > ")
         if i in input_map:
-            brain.signals.append(input_map[i])
+            input_signal = input_map[i]
+            print "Adding new {}".format(input_signal.__class__.__name__)
+            brain.cycle(input_signal)
+        else: 
+            brain.cycle()
 
-        # Process new signals
-        brain.cycle()
 
 if __name__ == "__main__":
     main()
