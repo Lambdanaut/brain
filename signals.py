@@ -5,8 +5,7 @@ import time
 class Signal():
     def difference(self, sig):
         """ Returns the difference between this and another signal's values in a range from 0.0 - 1.0 """
-        if type(sig) == type(self)
-        return 0
+        raise NotImplementedError
 
     def combine(self, sig):
         """ Alters this signal to represent a "combined" form of this signal and another signal. """
@@ -59,7 +58,7 @@ class Incentive(Signal, Feeling):
     def incentive(self):
         return 0 + intensity
 
-class Pain(Signal):
+class Pain(Signal, Feeling):
     """ A physical pain with values from 0.0 - 1.0 """
     @property
     def incentive(self):
@@ -75,7 +74,7 @@ class Short_Term_Memory():
     def __init__(self, signal):
         self.signal = signal
 
-class Long_Term_Memory(signal):
+class Long_Term_Memory(Signal):
     """ A memory of signals occuring at times near each other """
     time_created = time.time()
 
@@ -83,26 +82,31 @@ class Long_Term_Memory(signal):
         self.signals = signals
         self.brain = brain
 
-    def difference(self, sig):
+    def difference(self, comparing_sig):
+
         """ Returns an average difference of all signals of the same types of both lists """
 
         # TODO: This won't work. It requires more thought. 
 
         # Gets the difference in length between the two signal lists from 0.0 - 1.0. 
         # If the len_diff is greater than 5, set the difference to 1.0
-        len_diff = min(abs(len(self.signals) - len(sig.signals)) / 10, 1.0)
-        dif = 0.0
+        len_diff = min(abs(len(self.signals) - len(comparing_sig.signals)) / 10, 1.0)
+
+        dif = 0.0 + len_diff
+
         total_matches = 0
+
         for sig1 in self.signals:
-            for sig2 in self.signals:
-                toChange = 1.0
+            for sig2 in comparing_sig.signals:
+                any_matches = False
                 if type(sig1) == type(sig2):
                     sigdif = sig1.difference(sig2) 
                     if self.brain.match_signals(sigdif):
+                        any_matches = True
                         dif += sigdif
-
+                        total_matches += 1
 
         if total_matches:
-            return dif / total_matches
+            return dif / (total_matches + 1) # The +1 is for len_diff
         else: 
             return 1.0

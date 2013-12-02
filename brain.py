@@ -17,10 +17,9 @@ class Brain():
         self.short_term_memory = []
         self.long_term_memory = [] # List of lists of old signals
 
-    def clean_short_term_memory(self):
-        """ Removes short term memories that are older than time_threshold """
-        now = time.time()
-        self.short_term_memory = filter(lambda memory: now - memory.time_created < time_threshold, self.short_term_memory)
+    def cycle(self):
+        """ Runs through a single frame of thinking """
+        self.read_signals()
 
     def read_signals(self):
         """ Read and process new signals being received """
@@ -37,6 +36,12 @@ class Brain():
             new_longterm_memory = []
             for memoryY in self.short_term_memory:
                 if id(memoryX) != id(memoryY):
+                    pass
+
+    def clean_short_term_memory(self):
+        """ Removes short term memories that are older than time_threshold """
+        now = time.time()
+        self.short_term_memory = filter(lambda memory: now - memory.time_created < self.time_threshold, self.short_term_memory)
 
     def match_signals(self, signal_difference):
         """ Returns true if the signals are more similar than the diff_threshold """

@@ -1,6 +1,7 @@
 from __future__ import division
 
 from brain import *
+from signals import Color, Incentive, Pain
 
 # Pre-defined signals to feed into the brain
 white = Color(255,255,255)
@@ -26,7 +27,7 @@ def main():
             brain.signals.append(input_map[i])
 
         # Process new signals
-        brain.read_signals()
+        brain.cycle()
 
 if __name__ == "__main__":
     main()
