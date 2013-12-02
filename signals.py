@@ -43,9 +43,7 @@ class Feeling():
         Returns 1.0 if the signals are not of the same type (incentive/pain).
         Returns the numerical difference otherwise.
         """
-        if (self.incentive > 0 and sig.incentive > 0) or (self.incentive <= 0 and sig.incentive <= 0):
-            return 1.0
-        return abs(self.incentive - sig.incentive)
+        return min(abs(self.incentive - sig.incentive), 1.0)
 
     def combine(self, sig):
         this.intensity += sig.intensity
@@ -75,9 +73,8 @@ class Short_Term_Memory():
 
 class Long_Term_Memory(Signal):
     """ A memory of signals occuring at times near each other """
-    def __init__(self, brain, signals):
+    def __init__(self, signals):
         self.signals = signals
-        self.brain = brain
 
         now = time.time()
         self.time_created = now
@@ -95,19 +92,14 @@ class Long_Term_Memory(Signal):
 
         dif = 0.0 + len_diff
 
-        total_matches = 0
-
         for sig1 in self.signals:
+            closest_match = 1.0
             for sig2 in comparing_sig.signals:
-                any_matches = False
                 if sig1.__class__.__name__ == sig2.__class__.__name__:
                     sigdif = sig1.difference(sig2) 
-                    if self.brain.match_signals(sigdif):
-                        any_matches = True
-                        dif += sigdif
-                        total_matches += 1
+                    if sigdif < closest_match:
+                        print str(closest_match) + ": " + sig1.__class__.__name__ + " " + str(sigdif)
+                        closest_match = sigdif
+            dif += closest_match
 
-        if total_matches:
-            return dif / (total_matches + 1) # The +1 is for len_diff
-        else: 
-            return 1.0
+        return dif / (len(self.signals) + 1) # The +1 is for len_diff

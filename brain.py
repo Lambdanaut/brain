@@ -49,6 +49,7 @@ class Brain():
             # If no long term memory match exists, then remember a new long term memory
             self.long_term_memories.append(new_long_term_memory)
 
+        print self.long_term_memories
 
 
 
@@ -60,14 +61,3 @@ class Brain():
     def match_signals(self, signal_difference):
         """ Returns true if the signals are more similar than the diff_threshold """
         return signal_difference < self.diff_threshold
-
-
-# debug
-from signals import *
-b = Brain()
-s = [Pain(1.0), Color(255,0,0)]
-m = Long_Term_Memory(b, s)
-
-b.cycle(m)
-# while True:
-    # b.cycle()
