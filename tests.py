@@ -5,7 +5,6 @@ from signals import *
 
 class MemoryTests(unittest.TestCase):
 	def setUp(self):
-		print "next"
 		self.b = Brain()
 		self.dummy_signals = [Pain(1.0), Color(255,0,0), Color(5,10,115), Incentive(0.5), Color(255,255,255)]
 
@@ -44,9 +43,6 @@ class MemoryTests(unittest.TestCase):
 		difference2 = m2.difference(m1)
 
 		self.assertEqual(difference1, difference2)
-
-
-
 
 def main():
 	unittest.main()
