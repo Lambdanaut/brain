@@ -10,7 +10,7 @@ class Brain():
         self.time_threshold = 4.0
 
         # How different (from 0.0-1.0) a signal can be from another to trigger each other
-        self.diff_threshold = 0.5
+        self.diff_threshold = 0.1
 
         # Maximum number of long term memories that will be held at a time
         # When this number is reached, the oldest long term memories are discarded
@@ -35,13 +35,14 @@ class Brain():
 
         # Check for long term memory match
         short_term_memory_signals = map(lambda memory: memory.signal, self.short_term_memories)
-        new_long_term_memory = Long_Term_Memory(self, short_term_memory_signals)
+        new_long_term_memory = Long_Term_Memory(short_term_memory_signals)
 
         for long_term_memory_index in range(0,len(self.long_term_memories)):
             long_term_memory = self.long_term_memories[long_term_memory_index]
             if self.match_signals(new_long_term_memory.difference(long_term_memory)):
                 # If we have a match, then bring the match to the front of our long term memory
                 # TODO: This remove & append is very innefficient. Try to re-write it somehow. 
+                # TODO: Combine the new_long_term_memory with the matched long_term_memory
                 self.long_term_memories.remove(long_term_memory)
                 self.long_term_memories.append(long_term_memory)
                 break

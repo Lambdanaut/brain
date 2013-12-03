@@ -81,7 +81,6 @@ class Long_Term_Memory(Signal):
         # self.last_recalled = now
 
     def difference(self, comparing_sig):
-
         """ Returns an average difference of all signals of the same types of both lists """
 
         # TODO: Write a good description of what the fuck is going on here.

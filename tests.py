@@ -44,6 +44,16 @@ class MemoryTests(unittest.TestCase):
 
 		self.assertEqual(difference1, difference2)
 
+class SignalTests(unittest.TestCase):
+	def setup(self):
+		pass 
+
+	def test_color_difference(self):
+		""" Tests that the difference of the same two colors is 0 """
+		red = Color(255,0,0)
+		self.assertEqual(red.difference(red), 0.0)
+
+
 def main():
 	unittest.main()
 
