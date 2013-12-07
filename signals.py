@@ -94,24 +94,32 @@ class Long_Term_Memory(Signal):
     def difference(self, comparing_sig):
         """ Returns an average difference of all signals of the same types of both lists """
 
-        # TODO: Write a good description of what the fuck is going on here.
+        len_self_signals = len(self.signals)
+        len_comparing_signals = len(comparing_sig.signals)
 
         # Gets the difference in length between the two signal lists from 0.0 - 1.0. 
-        # If the len_diff is greater than 5, set the difference to 1.0
-        len_diff = min(abs(len(self.signals) - len(comparing_sig.signals)) / 10, 1.0)
+        # If the len_diff is greater than 10, set the difference to 1.0
+        len_diff = min(abs(len_self_signals - len_comparing_signals) / 10, 1.0)
+
+        # Make sure we always loop through the smaller list first
+        outer_loop = self.signals
+        inner_loop = comparing_sig.signals
+
+        if len_self_signals > len_comparing_signals:
+            outer_loop, inner_loop = inner_loop, outer_loop
 
         dif = 0.0 + len_diff
 
-        for sig1 in self.signals:
+        for sig1 in outer_loop:
             closest_match = 1.0
-            for sig2 in comparing_sig.signals:
+            for sig2 in inner_loop:
                 if sig1.__class__.__name__ == sig2.__class__.__name__:
-                    sigdif = sig1.difference(sig2) 
+                    sigdif = sig1.difference(sig2)
                     if sigdif < closest_match:
                         closest_match = sigdif
             dif += closest_match
 
-        return dif / (len(self.signals) + 1) # The +1 is for len_diff
+        return dif / (len(outer_loop) + 1) # The +1 is for len_diff
 
     def combine(self, combining_sig):
         """ Combines every signal's closest match to create a new ltm """
