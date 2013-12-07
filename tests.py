@@ -8,7 +8,7 @@ class MemoryTests(unittest.TestCase):
 		self.b = Brain()
 		self.dummy_signals = [Pain(1.0), Color(255,0,0), Color(5,10,115), Incentive(0.5), Color(255,255,255)]
 
-	def test_same_long_term_memory_difference_equal_to_zero(self):
+	def test_same_ltm_difference_equal_to_zero(self):
 		""" Tests that two equivalent Long Term Memories have a difference of zero """
 
 		signals = self.dummy_signals
@@ -19,7 +19,7 @@ class MemoryTests(unittest.TestCase):
 
 		self.assertEqual(difference1, 0)
 
-	def test_long_term_memory_difference_signal_order(self):
+	def test_ltm_difference_signal_order(self):
 		""" Tests that two equivalent Long Term Memories have the same difference if their signals are reversed """
 
 		signals = self.dummy_signals
@@ -32,7 +32,7 @@ class MemoryTests(unittest.TestCase):
 
 		self.assertEqual(difference1, difference2)
 
-	def test_long_term_memory_difference_order_of_call(self):
+	def test_ltm_difference_order_of_call(self):
 		""" Tests that two equivalent Long Term Memories have the same difference if called in reverse order """
 
 		signals = self.dummy_signals
@@ -43,6 +43,18 @@ class MemoryTests(unittest.TestCase):
 		difference2 = m2.difference(m1)
 
 		self.assertEqual(difference1, difference2)
+
+	def test_ltm_equal_combined(self):
+		""" Tests that two equivalent Long Term Memories have equal signal lists regardless of the order they are combined in """
+
+		signals = self.dummy_signals
+		m1 = Long_Term_Memory(signals)
+		m2 = Long_Term_Memory(signals)
+
+		combined1 = m1.combine(m2)
+		combined2 = m2.combine(m1)
+
+		self.assertEqual(combined1.signals, combined2.signals)
 
 class SignalTests(unittest.TestCase):
 	def setup(self):

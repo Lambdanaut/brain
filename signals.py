@@ -8,13 +8,19 @@ class Signal():
         raise NotImplementedError
 
     def combine(self, sig):
-        """ Alters this signal to represent a "combined" form of this signal and another signal's values. """
+        """ Returns a signal to represent a "combined" form of this signal and another signal's values. """
         raise NotImplementedError
 
     @property
     def incentive(self):
         """ A measure of how desireable the signal is to feel or avoid from -1.0 - 1.0 """
         return 0
+
+    def __repr__(self):
+        return self.__class__.__name__
+
+    def __str__(self):
+        return self.__repr__()
 
 
 class Color(Signal):
@@ -29,9 +35,14 @@ class Color(Signal):
         return (abs(self.r - sig.r) + abs(self.g - sig.g) + abs(self.b - sig.b)) / 3 / 255
 
     def combine(self, sig):
-        self.r = (self.r + sig.r) / 2
-        self.g = (self.g + sig.g) / 2
-        self.b = (self.b + sig.b) / 2
+        r = (self.r + sig.r) / 2
+        g = (self.g + sig.g) / 2
+        b = (self.b + sig.b) / 2
+        new_color = Color(r, g, b)
+        return new_color
+
+    def __repr__(self):
+        return "{} ({}, {}, {})".format(self.__class__.__name__, str(self.r), str(self.g), str(self.b))
 
 
 class Feeling():
@@ -46,8 +57,8 @@ class Feeling():
         return min(abs(self.incentive - sig.incentive), 1.0)
 
     def combine(self, sig):
-        this.intensity += sig.intensity
-        this.intensity /= 2
+        new_intensity = (this.intensity + sig.intensity) / 2
+        return new_intensity
 
 
 class Incentive(Feeling, Signal):
@@ -97,8 +108,36 @@ class Long_Term_Memory(Signal):
                 if sig1.__class__.__name__ == sig2.__class__.__name__:
                     sigdif = sig1.difference(sig2) 
                     if sigdif < closest_match:
-                        print str(closest_match) + ": " + sig1.__class__.__name__ + " " + str(sigdif)
                         closest_match = sigdif
             dif += closest_match
 
         return dif / (len(self.signals) + 1) # The +1 is for len_diff
+
+    def combine(self, combining_sig):
+        """ Combines every signal's closest match to create a new ltm """
+
+        # Return an empty ltm if either of the input ltm is empty
+        if not combining_sig.signals or not self.signals:
+            return Long_Term_Memory([])
+
+        new_ltm_signals = []
+        for sig1 in self.signals:
+            closest_match_diff = 1.0
+            closest_match_signal = None
+            for sig2 in combining_sig.signals:
+                if sig1.__class__.__name__ == sig2.__class__.__name__:
+                    sigdif = sig1.difference(sig2) 
+                    if sigdif < closest_match_diff:
+                        closest_match_diff = sigdif
+                        closest_match_signal = sig2
+            if closest_match_signal:
+                new_ltm_signals.append(closest_match_signal)
+
+        new_ltm = Long_Term_Memory(new_ltm_signals)
+        return new_ltm
+
+    def __str__(self):
+        return str(self.signals)
+
+    def __repr__(self):
+        return self.__str__()
