@@ -101,7 +101,7 @@ class Long_Term_Memory(Signal):
         # If the len_diff is greater than 10, set the difference to 1.0
         len_diff = min(abs(len_self_signals - len_comparing_signals) / 10, 1.0)
 
-        # Make sure we always loop through the smaller list first
+        # Ensure that we always loop through the smaller list first
         outer_loop = self.signals
         inner_loop = comparing_sig.signals
 
@@ -128,11 +128,18 @@ class Long_Term_Memory(Signal):
         if not combining_sig.signals or not self.signals:
             return Long_Term_Memory([])
 
+        # Ensure that we always loop through the smaller list first
+        outer_loop = self.signals
+        inner_loop = combining_sig.signals
+
+        if len(self.signals) > len(combining_sig.signals):
+            outer_loop, inner_loop = inner_loop, outer_loop
+
         new_ltm_signals = []
-        for sig1 in self.signals:
+        for sig1 in outer_loop:
             closest_match_diff = 1.0
             closest_match_signal = None
-            for sig2 in combining_sig.signals:
+            for sig2 in inner_loop:
                 if sig1.__class__.__name__ == sig2.__class__.__name__:
                     sigdif = sig1.difference(sig2) 
                     if sigdif < closest_match_diff:
