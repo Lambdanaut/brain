@@ -35,7 +35,7 @@ class MemoryTests(unittest.TestCase):
 
 	def test_ltm_difference_order_of_call(self):
 		""" Tests that two different Long Term Memories have the same difference if called in reverse order """
-		
+
 		signals1 = self.dummy_signals1
 		signals2 = self.dummy_signals2
 		m1 = Long_Term_Memory(signals1)
@@ -68,6 +68,10 @@ class SignalTests(unittest.TestCase):
 		red = Color(255,0,0)
 		self.assertEqual(red.difference(red), 0.0)
 
+	def test_incentive_difference(self):
+		""" Tests that the difference of the same two incentives is 0 """
+		incentive = Incentive(0.314)
+		self.assertEqual(incentive.difference(incentive), 0.0)
 
 def main():
 	unittest.main()
