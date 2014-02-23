@@ -6,6 +6,7 @@ from signals import Color, Feeling
 # Pre-defined signals to feed into the brain
 white = Color(255,255,255)
 black = Color(0,0,0)
+grey = Color(10,10,10)
 incentive = Feeling(1.0)
 pain = Feeling(-1.0)
 
@@ -16,6 +17,7 @@ def main():
     input_map = {
         "w": white,
         "b": black,
+        "g": grey,
         "i": incentive,
         "p": pain,
     }

@@ -41,16 +41,16 @@ class Brain():
             if self.match_signals(new_long_term_memory.difference(long_term_memory)):
                 # If we have a match, then bring the match to the front of our long term memory
                 # TODO: This remove & append is very innefficient. Try to re-write it somehow. 
-                # TODO: Combine the new_long_term_memory with the matched long_term_memory
                 self.long_term_memories.remove(long_term_memory)
-                # long_term_memory = 
+                long_term_memory = new_long_term_memory.combine(long_term_memory)
                 self.long_term_memories.append(long_term_memory)
                 break
         else:
             # If no long term memory match exists, then remember a new long term memory
             self.long_term_memories.append(new_long_term_memory)
 
-        print (self.long_term_memories)
+        for m in self.long_term_memories:
+            print (m)
 
     def clean_short_term_memory(self):
         """ Removes short term memories that are older than time_threshold """
