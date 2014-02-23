@@ -26,10 +26,9 @@ class Brain():
         self.clean_short_term_memory()
 
         # Process new signal into short term memory
-        if signal != None:
+        if signal is not None:
             new_short_term_memory = Short_Term_Memory(signal)
             self.short_term_memories.append(new_short_term_memory)
-
 
         # Process short term memories into long term memories
 
@@ -44,15 +43,14 @@ class Brain():
                 # TODO: This remove & append is very innefficient. Try to re-write it somehow. 
                 # TODO: Combine the new_long_term_memory with the matched long_term_memory
                 self.long_term_memories.remove(long_term_memory)
+                # long_term_memory = 
                 self.long_term_memories.append(long_term_memory)
                 break
         else:
             # If no long term memory match exists, then remember a new long term memory
             self.long_term_memories.append(new_long_term_memory)
 
-        print self.long_term_memories
-
-
+        print (self.long_term_memories)
 
     def clean_short_term_memory(self):
         """ Removes short term memories that are older than time_threshold """

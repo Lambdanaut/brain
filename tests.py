@@ -6,8 +6,8 @@ from signals import *
 class MemoryTests(unittest.TestCase):
 	def setUp(self):
 		self.b = Brain()
-		self.dummy_signals1 = [Pain(1.0), Color(255,0,0), Color(5,10,115), Incentive(0.5), Color(255,255,255)]
-		self.dummy_signals2 = [Color(0,0,0), Color(0,100,255), Incentive(1.0), Incentive(1.0)]
+		self.dummy_signals1 = [Feeling(-1.0), Color(255,0,0), Color(5,10,115), Feeling(0.5), Color(255,255,255)]
+		self.dummy_signals2 = [Color(0,0,0), Color(0,100,255), Feeling(1.0), Feeling(1.0)]
 
 	def test_same_ltm_difference_equal_to_zero(self):
 		""" Tests that two equivalent Long Term Memories have a difference of zero """
@@ -57,7 +57,9 @@ class MemoryTests(unittest.TestCase):
 		combined1 = m1.combine(m2)
 		combined2 = m2.combine(m1)
 
-		self.assertEqual(combined1.signals, combined2.signals)
+		difference = [sig1.difference(sig2) for (sig1, sig2) in zip(combined1.signals, combined2.signals) ]
+
+		self.assertTrue(not any(difference))
 
 class SignalTests(unittest.TestCase):
 	def setUp(self):
@@ -68,10 +70,10 @@ class SignalTests(unittest.TestCase):
 		red = Color(255,0,0)
 		self.assertEqual(red.difference(red), 0.0)
 
-	def test_incentive_difference(self):
-		""" Tests that the difference of the same two incentives is 0 """
-		incentive = Incentive(0.314)
-		self.assertEqual(incentive.difference(incentive), 0.0)
+	def test_feeling_difference(self):
+		""" Tests that the difference of the same two feelings is 0 """
+		feeling = Feeling(0.314)
+		self.assertEqual(feeling.difference(feeling), 0.0)
 
 def main():
 	unittest.main()

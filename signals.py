@@ -2,7 +2,8 @@ from __future__ import division
 
 import time
 
-class Signal():
+
+class Signal(object):
     def difference(self, sig):
         """ Returns the difference between this and another signal's values in a range from 0.0 - 1.0 """
         raise NotImplementedError
@@ -10,11 +11,6 @@ class Signal():
     def combine(self, sig):
         """ Returns a signal to represent a "combined" form of this signal and another signal's values. """
         raise NotImplementedError
-
-    @property
-    def incentive(self):
-        """ A measure of how desireable the signal is to feel or avoid from -1.0 - 1.0 """
-        return 0
 
     def __repr__(self):
         return self.__class__.__name__
@@ -45,7 +41,8 @@ class Color(Signal):
         return "{} ({}, {}, {})".format(self.__class__.__name__, str(self.r), str(self.g), str(self.b))
 
 
-class Feeling():
+class Feeling(Signal):
+    """ A positive or negative feeling with values from -1.0 - 1.0 """
     def __init__(self, intensity):
         self.intensity = intensity
 
@@ -54,25 +51,15 @@ class Feeling():
         Returns 1.0 if the signals are not of the same type (incentive/pain).
         Returns the numerical difference otherwise.
         """
-        return min(abs(self.incentive - sig.incentive), 1.0)
+        return min(abs(self.intensity - sig.intensity), 1.0)
 
     def combine(self, sig):
-        new_intensity = (this.intensity + sig.intensity) / 2
-        return new_intensity
+        new_feeling = Feeling((self.intensity + sig.intensity) / 2)
 
+        return new_feeling
 
-class Incentive(Feeling, Signal):
-    """ An incentive with values from 0.0 - 1.0 """
-    @property
-    def incentive(self):
-        return 0 + self.intensity
-
-
-class Pain(Feeling, Signal):
-    """ A physical pain with values from 0.0 - 1.0 """
-    @property
-    def incentive(self):
-        return 0 - self.intensity
+    def __repr__(self):
+        return "{} ({})".format(self.__class__.__name__, self.intensity)
 
 
 class Short_Term_Memory():
@@ -81,6 +68,7 @@ class Short_Term_Memory():
         self.signal = signal
 
         self.time_created = time.time()
+
 
 class Long_Term_Memory(Signal):
     """ A memory of signals occuring at times near each other """
@@ -146,7 +134,8 @@ class Long_Term_Memory(Signal):
                         closest_match_diff = sigdif
                         closest_match_signal = sig2
             if closest_match_signal:
-                new_ltm_signals.append(closest_match_signal)
+                new_combined_signal = closest_match_signal.combine(sig1)
+                new_ltm_signals.append(new_combined_signal)
 
         new_ltm = Long_Term_Memory(new_ltm_signals)
         return new_ltm
